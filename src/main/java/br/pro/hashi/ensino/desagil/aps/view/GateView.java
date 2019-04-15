@@ -31,12 +31,13 @@ public class GateView extends FixedPanel implements ItemListener, MouseListener 
         switches = new Switch[inputSize];
         inputBoxes = new JCheckBox[inputSize];
         light = new Light();
+        light.connect(0, gate);
 
         for (int i = 0; i < inputSize; i++) {
             switches[i] = new Switch();
             inputBoxes[i] = new JCheckBox();
             gate.connect(i, switches[i]);
-            light.connect(0, gate);
+
         }
 
         light.setR(255);
