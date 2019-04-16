@@ -106,7 +106,7 @@ public class GateView extends FixedPanel implements ItemListener, MouseListener 
                 light.setB(temporaryColor.getBlue());
 
             } catch (Exception ex) {
-
+                ;
             }
 
 
