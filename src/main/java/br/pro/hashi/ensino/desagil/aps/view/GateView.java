@@ -20,7 +20,7 @@ public class GateView extends FixedPanel implements ItemListener {
     private final Switch[] switches;
     private final Gate gate;
     private final JCheckBox[] inputBoxes;
-    private final JCheckBox outputBox;
+    private final JCheckBox[] outputBoxes;
     private final Image image;
 
     public GateView(Gate gate) {
@@ -32,6 +32,7 @@ public class GateView extends FixedPanel implements ItemListener {
 
         switches = new Switch[inputSize];
         inputBoxes = new JCheckBox[inputSize];
+        outputBoxes = new JCheckBox[gate.getOutputSize()];
 
         for (int i = 0; i < inputSize; i++) {
             switches[i] = new Switch();
@@ -39,10 +40,12 @@ public class GateView extends FixedPanel implements ItemListener {
 
             gate.connect(i, switches[i]);
         }
+        for (int i = 0; i < gate.getOutputSize(); i++) {
+            outputBoxes[i] = new JCheckBox();
+        }
 
-        outputBox = new JCheckBox();
 
-        int x, y, step;
+        int x, y, step, stepout;
 
         x = BORDER;
         y = -(SWITCH_SIZE / 2);
@@ -51,8 +54,28 @@ public class GateView extends FixedPanel implements ItemListener {
             y += step;
             add(inputBox, x, y, SWITCH_SIZE, SWITCH_SIZE);
         }
+        for (int i = 0; i < gate.getOutputSize(); i++) {
+            outputBoxes[i].setEnabled(false);
 
-        add(outputBox, BORDER + SWITCH_SIZE + GATE_WIDTH, (GATE_HEIGHT - SWITCH_SIZE) / 2, SWITCH_SIZE, SWITCH_SIZE);
+            if (gate.getOutputSize() == 1) {
+                add(outputBoxes[i], BORDER + SWITCH_SIZE + GATE_WIDTH, (GATE_HEIGHT - SWITCH_SIZE) / 2, SWITCH_SIZE, SWITCH_SIZE);
+
+
+            } else {
+                if (i == 0) {
+                    add(outputBoxes[i], BORDER + SWITCH_SIZE + GATE_WIDTH, 10, SWITCH_SIZE, SWITCH_SIZE);
+
+                } else {
+                    add(outputBoxes[i], BORDER + SWITCH_SIZE + GATE_WIDTH, 30, SWITCH_SIZE, SWITCH_SIZE);
+
+                }
+
+
+            }
+
+
+        }
+
 
         String name = gate.toString() + ".png";
         URL url = getClass().getClassLoader().getResource(name);
@@ -62,7 +85,6 @@ public class GateView extends FixedPanel implements ItemListener {
             inputBox.addItemListener(this);
         }
 
-        outputBox.setEnabled(false);
 
         update();
     }
@@ -75,10 +97,17 @@ public class GateView extends FixedPanel implements ItemListener {
                 switches[i].turnOff();
             }
         }
+        if (gate.getOutputSize() == 1) {
+            boolean result = gate.read();
+            outputBoxes[0].setSelected(result);
 
-        boolean result = gate.read();
+        } else {
+            outputBoxes[0].setSelected(gate.read(0));
+            outputBoxes[1].setSelected(gate.read(1));
 
-        outputBox.setSelected(result);
+        }
+
+
     }
 
     @Override
